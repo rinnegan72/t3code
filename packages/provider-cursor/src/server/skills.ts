@@ -224,6 +224,46 @@ const discoverSkillsInRoot = Effect.fn("discoverCursorSkillsInRoot")(function* (
   return skills;
 });
 
+const asRecord = (value: unknown): Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+
+const parseJsonRecord = (contents: string | undefined): Record<string, unknown> => {
+  try {
+    return asRecord(contents === undefined ? undefined : JSON.parse(contents));
+  } catch {
+    return {};
+  }
+};
+
+// ponytail: user settings + user-scope installs + default `skills/` dir only; project/managed
+// settings and manifest-declared skill dirs live in ClaudeSkills.ts, move it to shared if needed.
+const claudePluginSkillDirectories = Effect.fn("claudePluginSkillDirectories")(function* (
+  userHome: string,
+  environment: NodeJS.ProcessEnv,
+) {
+  const fileSystem = yield* FileSystem.FileSystem;
+  const path = yield* Path.Path;
+  const configDir = environment.CLAUDE_CONFIG_DIR?.trim() || path.join(userHome, ".claude");
+  const readJson = (file: string) =>
+    orUndefined(fileSystem.readFileString(file)).pipe(Effect.map(parseJsonRecord));
+  const enabled = asRecord((yield* readJson(path.join(configDir, "settings.json"))).enabledPlugins);
+  const installed = asRecord(
+    (yield* readJson(path.join(configDir, "plugins", "installed_plugins.json"))).plugins,
+  );
+  return Object.entries(installed).flatMap(([key, entries]) =>
+    enabled[key] === true && Array.isArray(entries)
+      ? entries.flatMap((entry) => {
+          const { scope, installPath } = asRecord(entry);
+          return scope === "user" && typeof installPath === "string"
+            ? [path.join(installPath, "skills")]
+            : [];
+        })
+      : [],
+  );
+});
+
 const inspectCursorSkills = Effect.fn("inspectCursorSkills")(function* (
   cwd?: string,
   environment: NodeJS.ProcessEnv = process.env,
@@ -244,6 +284,11 @@ const inspectCursorSkills = Effect.fn("inspectCursorSkills")(function* (
     ...rootsBelow(userHome, "user"),
     // Cursor syncs its built-in skills here; same-named user and project skills win.
     { directory: path.join(userHome, ".cursor", "skills-cursor"), scope: "system" as const },
+    // Claude Code plugin skills (e.g. ponytail) go last so they never hide user skills.
+    ...(yield* claudePluginSkillDirectories(userHome, environment)).map((directory) => ({
+      directory,
+      scope: "user" as const,
+    })),
   ];
 
   const skillsByName = new Map<string, ServerProviderSkill>();

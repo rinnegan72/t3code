@@ -77,6 +77,35 @@ describe("Cursor skills", () => {
           path.join(userHome, ".codex", "skills"),
           "not a directory",
         );
+        const pluginPath = path.join(userHome, "plugins", "ponytail");
+        const disabledPluginPath = path.join(userHome, "plugins", "off");
+        yield* writeSkill(
+          path.join(pluginPath, "skills"),
+          "ponytail",
+          "---\ndescription: lazy\n---\n",
+        );
+        yield* writeSkill(
+          path.join(pluginPath, "skills"),
+          "review",
+          "---\ndescription: plugin\n---\n",
+        );
+        yield* writeSkill(path.join(disabledPluginPath, "skills"), "hidden", "");
+        yield* fileSystem.makeDirectory(path.join(userHome, ".claude", "plugins"), {
+          recursive: true,
+        });
+        yield* fileSystem.writeFileString(
+          path.join(userHome, ".claude", "settings.json"),
+          JSON.stringify({ enabledPlugins: { "ponytail@m": true, "off@m": false } }),
+        );
+        yield* fileSystem.writeFileString(
+          path.join(userHome, ".claude", "plugins", "installed_plugins.json"),
+          JSON.stringify({
+            plugins: {
+              "ponytail@m": [{ scope: "user", installPath: pluginPath }],
+              "off@m": [{ scope: "user", installPath: disabledPluginPath }],
+            },
+          }),
+        );
 
         const skills = yield* discoverCursorSkills(workspace, { HOME: userHome });
         expect(skills).toEqual([
@@ -98,6 +127,13 @@ describe("Cursor skills", () => {
             name: "oversized",
             path: path.join(workspace, ".cursor", "skills", "oversized", "SKILL.md"),
             scope: "project",
+            enabled: true,
+          },
+          {
+            name: "ponytail",
+            description: "lazy",
+            path: path.join(pluginPath, "skills", "ponytail", "SKILL.md"),
+            scope: "user",
             enabled: true,
           },
           {
