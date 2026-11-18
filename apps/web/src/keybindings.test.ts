@@ -265,6 +265,31 @@ describe("thread undo shortcut", () => {
   });
 });
 
+describe("vim navigation shortcuts", () => {
+  const resolve = (key: string, context: Record<string, boolean>) =>
+    resolveShortcutCommand(event({ key }), DEFAULT_RESOLVED_KEYBINDINGS, {
+      platform: "MacIntel",
+      context,
+    });
+
+  it("apply only when enabled and outside text fields and terminals", () => {
+    assert.equal(resolve("j", { vimNavigation: true }), "thread.next");
+    assert.isNull(resolve("j", { vimNavigation: false }));
+    assert.isNull(resolve("j", { vimNavigation: true, editableFocus: true }));
+    assert.isNull(resolve("j", { vimNavigation: true, terminalFocus: true }));
+    assert.equal(
+      resolveShortcutCommand(
+        event({ key: ":", code: "Semicolon", shiftKey: true }),
+        DEFAULT_RESOLVED_KEYBINDINGS,
+        { platform: "MacIntel", context: { vimNavigation: true } },
+      ),
+      "commandPalette.toggle",
+    );
+    assert.equal(resolve("escape", { vimNavigation: true, editableFocus: true }), "composer.blur");
+    assert.isNull(resolve("escape", { vimNavigation: false, editableFocus: true }));
+  });
+});
+
 describe("split/new/close terminal shortcuts", () => {
   it("supports when expressions", () => {
     const keybindings = compile([

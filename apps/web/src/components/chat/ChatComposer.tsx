@@ -1,3 +1,4 @@
+import { registerCommands } from "~/shortcuts/dispatcher";
 import { copySnapshot } from "./copySnapshot";
 import { VoiceInputSetup } from "./VoiceInputSetup";
 import { useComposerTypingGuard } from "./useComposerTypingGuard";
@@ -2426,6 +2427,18 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       dismissPromptSuggestion,
     })(key, event, isTaskItem);
 
+  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- registers vim-navigation focus commands with the command registry while the composer is mounted
+  useEffect(() => {
+    if (backgroundThread) return;
+    return registerCommands({
+      "composer.focus": () => composerEditorRef.current?.focusAtEnd(),
+      "composer.blur": (event) => {
+        const target = event.target instanceof HTMLElement ? event.target : null;
+        if (!target?.closest('[data-testid="composer-editor"]')) return false;
+        target.blur();
+      },
+    });
+  }, [backgroundThread]);
   const {
     stashQueue,
     isStashMenuOpen,

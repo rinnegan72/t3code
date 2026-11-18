@@ -20,6 +20,7 @@ import {
 } from "@t3tools/shared/keybindings";
 import { isElectron } from "./env";
 import { isEditableFocused } from "./lib/editableFocus";
+import { getClientSettings } from "./hooks/useSettings";
 import { projectScriptIdFromCommand } from "./projectScripts";
 
 export type { ShortcutModifierStateLike } from "@t3tools/shared/keybindings";
@@ -67,6 +68,7 @@ function resolveContext(options: ShortcutMatchOptions | undefined): ShortcutMatc
     isWeb: !isElectron,
     isDesktop: isElectron,
     editableFocus: false,
+    vimNavigation: getClientSettings().vimNavigation,
     ...options?.context,
   };
 }

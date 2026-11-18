@@ -82,6 +82,8 @@ import { SettingsPageContainer, SettingsRow, SettingsSection } from "./settingsL
 import { keybindingSearchAnchorId, useSearchableSetting } from "./settingsSearch";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { useAtomCommand } from "../../state/use-atom-command";
+import { updateClientSettings, useClientSettings } from "../../hooks/useSettings";
+import { Switch } from "../ui/switch";
 
 function KeybindingPill({ value }: { value: string }) {
   // Keys dedupe repeated parts; a literal "+" in a shortcut splits into empty strings.
@@ -1437,6 +1439,7 @@ function useKeybindingCatalog() {
 
 export function KeybindingsSettingsPanel() {
   const searchableSetting = useSearchableSetting();
+  const vimNavigation = useClientSettings((settings) => settings.vimNavigation);
   const gt = useGT();
   const m = useMessages();
   const { environment: primaryEnvironment, connectedEnvironments } = useSettingsScope();
@@ -1648,6 +1651,20 @@ export function KeybindingsSettingsPanel() {
             </TooltipPopup>
           </Tooltip>
         </div>
+        <SettingsRow
+          {...searchableSetting("vim-navigation")}
+          title={gt("Vim navigation")}
+          description={gt(
+            "Outside text fields: j/k next/previous thread, i focus composer, Esc leave it, / find, : command palette, x settle, u undo, Ctrl+H/L move between panes.",
+          )}
+          control={
+            <Switch
+              aria-label={gt("Vim navigation")}
+              checked={vimNavigation}
+              onCheckedChange={(checked) => void updateClientSettings({ vimNavigation: checked })}
+            />
+          }
+        />
       </SettingsSection>
 
       {!canWriteSettings ? (

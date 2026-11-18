@@ -131,6 +131,33 @@ export const DEFAULT_KEYBINDINGS: ReadonlyArray<KeybindingRule> = [
   { key: "mod+shift+s", command: "thread.settle", when: "!terminalFocus" },
   { key: "mod+shift+p", command: "thread.pin", when: "!terminalFocus" },
   { key: "mod+z", command: "thread.undo", when: "!terminalFocus && !editableFocus" },
+  // Vim navigation (Settings → Keybindings); single keys apply only outside text fields.
+  { key: "j", command: "thread.next", when: "vimNavigation && !editableFocus && !terminalFocus" },
+  {
+    key: "k",
+    command: "thread.previous",
+    when: "vimNavigation && !editableFocus && !terminalFocus",
+  },
+  {
+    key: "i",
+    command: "composer.focus",
+    when: "vimNavigation && !editableFocus && !terminalFocus",
+  },
+  {
+    key: "/",
+    command: "chat.find",
+    when: "vimNavigation && !editableFocus && !terminalFocus && !previewFocus",
+  },
+  {
+    key: "shift+;",
+    command: "commandPalette.toggle",
+    when: "vimNavigation && !editableFocus && !terminalFocus",
+  },
+  { key: "x", command: "thread.settle", when: "vimNavigation && !editableFocus && !terminalFocus" },
+  { key: "u", command: "thread.undo", when: "vimNavigation && !editableFocus && !terminalFocus" },
+  { key: "ctrl+l", command: "workspace.focusNext", when: "vimNavigation && !terminalFocus" },
+  { key: "ctrl+h", command: "workspace.focusPrevious", when: "vimNavigation && !terminalFocus" },
+  { key: "escape", command: "composer.blur", when: "vimNavigation && editableFocus" },
   ...THREAD_JUMP_KEYBINDING_COMMANDS.map((command, index) => ({
     key: `mod+${index + 1}`,
     command,

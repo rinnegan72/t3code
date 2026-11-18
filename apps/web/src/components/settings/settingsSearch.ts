@@ -987,6 +987,12 @@ export const SETTINGS_SEARCH_ITEMS = [
     to: "/settings/keybindings",
     searchTerms: [msg("keyboard shortcuts hotkeys commands bindings json")],
   },
+  {
+    id: "vim-navigation",
+    title: msg("Vim navigation"),
+    to: "/settings/keybindings",
+    searchTerms: [msg("vim hjkl keyboard navigation mouse")],
+  },
   ...KEYBINDING_SEARCH_ITEMS,
   {
     id: "snap-shot-enabled",
