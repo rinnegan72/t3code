@@ -1,3 +1,4 @@
+import { registerTerminalEditorRunner } from "~/terminalEditor";
 import { m } from "../i18n/messages";
 import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
 import { useGT, useMessages } from "gt-react";
@@ -1938,6 +1939,7 @@ export default function ChatView(props: ChatViewProps) {
     addTerminalSurfaceStable,
     closePanelTerminalStable,
     lastInvokedScriptByProjectId,
+    runInPanelTerminalStable,
     runProjectScriptStable,
     runShellCommandStable,
     splitPanelTerminalStable,
@@ -1962,6 +1964,11 @@ export default function ChatView(props: ChatViewProps) {
     setTerminalUiLaunchContext,
     setThreadError,
   });
+  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- registers this thread's panel terminal as the target for terminal editors such as nvim
+  useEffect(
+    () => registerTerminalEditorRunner((command) => void runInPanelTerminalStable(command)),
+    [runInPanelTerminalStable],
+  );
   const {
     saveProjectScript: saveProjectScriptStable,
     updateProjectScript: updateProjectScriptStable,

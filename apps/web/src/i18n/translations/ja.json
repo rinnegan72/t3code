@@ -1868,6 +1868,8 @@
   "f2b4bf6e30024469": "{path} を折りたたむ",
   "13bad2d3b2d2471c": "差分を展開",
   "3d117a49eb32d0cb": "差分を折りたたむ",
+  "1df07de7a6a6c5dd": "Neovim で {path} をレビュー",
+  "6a61f2a8d9ece87b": "Neovim でレビュー",
   "cadc29aaf9f0fd05": "自動",
   "ec520ada4398caa3": "コミット {sha}",
   "cf34b1bdf8179c16": "未コミット",

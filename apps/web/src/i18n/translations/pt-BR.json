@@ -1870,6 +1870,8 @@
   "f2b4bf6e30024469": "Recolher {path}",
   "13bad2d3b2d2471c": "Expandir diff",
   "3d117a49eb32d0cb": "Recolher diff",
+  "1df07de7a6a6c5dd": "Revisar {path} no Neovim",
+  "6a61f2a8d9ece87b": "Revisar no Neovim",
   "cadc29aaf9f0fd05": "Automático",
   "ec520ada4398caa3": "Commit {sha}",
   "cf34b1bdf8179c16": "Sem commit",

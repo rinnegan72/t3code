@@ -545,6 +545,10 @@ const resolveEditorLaunch = Effect.fn("resolveEditorLaunch")(function* (
   if (!editorDef) {
     return yield* new ExternalLauncherUnknownEditorError({ editor: input.editor });
   }
+  // A terminal editor spawned here would have no TTY; clients run it in a T3 terminal instead.
+  if ("terminal" in editorDef) {
+    return yield* new ExternalLauncherUnsupportedEditorError({ editor: input.editor });
+  }
 
   const target = input.cwd;
   let position = input.position;

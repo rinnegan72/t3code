@@ -1,3 +1,4 @@
+import { runInTerminalEditor, terminalDiffCommand } from "~/terminalEditor";
 import { T, useGT, useMessages, Var } from "gt-react";
 import { RefreshIcon } from "~/components/ui/refresh-icon";
 import { useAtomValue } from "@effect/atom-react";
@@ -26,6 +27,7 @@ import {
   ChevronRightIcon,
   ChevronsDownUpIcon,
   ChevronsUpDownIcon,
+  SquareTerminalIcon,
 } from "lucide-react";
 import * as Schema from "effect/Schema";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
@@ -188,6 +190,7 @@ function DiffFileHeaderSuffix({
   error,
   truncated,
   onRetry,
+  onReviewInNvim,
 }: {
   filePath: string;
   workspaceRoot: string | undefined;
@@ -195,12 +198,34 @@ function DiffFileHeaderSuffix({
   error: boolean;
   truncated: boolean;
   onRetry: (path: string) => void;
+  onReviewInNvim: ((path: string) => void) | null;
 }) {
+  const gt = useGT();
   return (
     <>
       <span data-diff-copy-path className="inline-flex">
         <DiffFilePathCopyButton filePath={filePath} workspaceRoot={workspaceRoot} />
       </span>
+      {onReviewInNvim ? (
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                size="icon-micro"
+                variant="ghost"
+                aria-label={gt("Review {path} in Neovim", { path: filePath })}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onReviewInNvim(filePath);
+                }}
+              />
+            }
+          >
+            <SquareTerminalIcon className="size-3.5 text-muted-foreground/80" />
+          </TooltipTrigger>
+          <TooltipPopup side="top">{gt("Review in Neovim")}</TooltipPopup>
+        </Tooltip>
+      ) : null}
       {hasStat ? (
         <DiffFileStatus error={error} truncated={truncated} retry={() => onRetry(filePath)} />
       ) : null}
@@ -342,6 +367,18 @@ export default function DiffPanel({
       : (orderedTurnDiffSummaries.find((summary) => summary.runId === selectedRunId) ??
         orderedTurnDiffSummaries[0]);
   const selectedCheckpointTurnCount = selectedTurn?.checkpointTurnCount;
+  // ponytail: mirrors the server's refs/t3/checkpoints/<thread>/turn/<n> naming for the pre-turn snapshot.
+  const nvimDiffBase =
+    !serverConfig?.availableEditors.includes("nvim") || toolCallSelection || selectedCommitSha
+      ? null
+      : selectedTurn
+        ? selectedTurn.checkpointRef.replace(
+            /\/turn\/\d+$/,
+            `/turn/${Math.max(0, selectedTurn.checkpointTurnCount - 1)}`,
+          )
+        : diffSelection.kind === "unstaged"
+          ? "HEAD"
+          : selectedBaseRef;
   const latestTurn = orderedTurnDiffSummaries[0];
   const reviewSectionId = toolCallSelection
     ? `tool-call:${toolCallSelection.threadId}:${toolCallSelection.itemId}`
@@ -1516,6 +1553,12 @@ export default function DiffPanel({
                           error={state?.error ?? false}
                           truncated={state?.truncated ?? false}
                           onRetry={retry}
+                          onReviewInNvim={
+                            nvimDiffBase
+                              ? (filePath) =>
+                                  runInTerminalEditor(terminalDiffCommand(nvimDiffBase, filePath))
+                              : null
+                          }
                         />
                       );
                     }}

@@ -1870,6 +1870,8 @@
   "f2b4bf6e30024469": "Fäll ihop {path}",
   "13bad2d3b2d2471c": "Fäll ut diff",
   "3d117a49eb32d0cb": "Fäll ihop diff",
+  "1df07de7a6a6c5dd": "Granska {path} i Neovim",
+  "6a61f2a8d9ece87b": "Granska i Neovim",
   "cadc29aaf9f0fd05": "Automatisk",
   "ec520ada4398caa3": "Commit {sha}",
   "cf34b1bdf8179c16": "Ej committat",

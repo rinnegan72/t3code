@@ -454,6 +454,41 @@ it.effect("launches an installed editor with platform-safe arguments", () =>
   }).pipe(Effect.scoped, Effect.provide(NodeServices.layer)),
 );
 
+it.effect("detects terminal editors but never spawns them", () =>
+  Effect.gen(function* () {
+    const fileSystem = yield* FileSystem.FileSystem;
+    const path = yield* Path.Path;
+    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+    yield* fileSystem.writeFileString(path.join(binDir, "nvim"), "#!/bin/sh\n");
+    yield* fileSystem.chmod(path.join(binDir, "nvim"), 0o755);
+
+    const spawned: string[] = [];
+    const { available, error } = yield* Effect.gen(function* () {
+      const launcher = yield* ExternalLauncher.ExternalLauncher;
+      return {
+        available: yield* launcher.resolveAvailableEditors(),
+        error: yield* launcher
+          .launchEditor({ editor: "nvim", cwd: "/workspace/a.ts" })
+          .pipe(Effect.flip),
+      };
+    }).pipe(
+      Effect.provide(
+        layerTest({
+          platform: "linux",
+          env: { PATH: binDir },
+          onSpawn: (command) => {
+            spawned.push(command.command);
+          },
+        }),
+      ),
+    );
+
+    assert.ok(available.includes("nvim"));
+    assert.equal(error._tag, "ExternalLauncherUnsupportedEditorError");
+    assert.ok(!spawned.some((command) => command.includes("nvim")));
+  }).pipe(Effect.scoped, Effect.provide(NodeServices.layer)),
+);
+
 const wslpathSpawner = (out: string | undefined) =>
   Layer.succeed(
     ChildProcessSpawner.ChildProcessSpawner,

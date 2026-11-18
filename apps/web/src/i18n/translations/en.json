@@ -1870,6 +1870,8 @@
   "f2b4bf6e30024469": "Collapse {path}",
   "13bad2d3b2d2471c": "Expand diff",
   "3d117a49eb32d0cb": "Collapse diff",
+  "1df07de7a6a6c5dd": "Review {path} in Neovim",
+  "6a61f2a8d9ece87b": "Review in Neovim",
   "cadc29aaf9f0fd05": "Automatic",
   "ec520ada4398caa3": "Commit {sha}",
   "cf34b1bdf8179c16": "Uncommitted",

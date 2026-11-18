@@ -1872,6 +1872,8 @@
   "f2b4bf6e30024469": "折叠 {path}",
   "13bad2d3b2d2471c": "展开差异",
   "3d117a49eb32d0cb": "折叠差异",
+  "1df07de7a6a6c5dd": "在 Neovim 中审阅 {path}",
+  "6a61f2a8d9ece87b": "在 Neovim 中审阅",
   "cadc29aaf9f0fd05": "自动",
   "ec520ada4398caa3": "提交 {sha}",
   "cf34b1bdf8179c16": "未提交的更改",

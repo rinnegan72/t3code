@@ -347,6 +347,20 @@ export function useChatTerminalActions(input: ChatTerminalActionsInput) {
     void launched.result;
   };
   const addTerminalSurfaceStable = useStableCallback(addTerminalSurface);
+  // Full-height panel terminal for interactive programs such as nvim.
+  const runInPanelTerminal = async (command: string) => {
+    if (!hasTerminalWriteAccess() || !activeThreadRef) return;
+    useRightPanelStore.getState().setMaximized(activeThreadRef, false);
+    const launched = terminalActions.launchTerminal({
+      place: (terminalId) =>
+        useRightPanelStore.getState().openTerminal(activeThreadRef, terminalId),
+    });
+    if (!launched) return;
+    focusTerminal(activeThreadRef, launched.terminalId);
+    if ((await launched.result)._tag === "Failure") return;
+    await terminalActions.writeToTerminal(launched.terminalId, `${command}\r`);
+  };
+  const runInPanelTerminalStable = useStableCallback(runInPanelTerminal);
   const splitPanelTerminal = (direction: "horizontal" | "vertical" = "horizontal") => {
     if (
       !activeThreadRef ||
@@ -463,6 +477,7 @@ export function useChatTerminalActions(input: ChatTerminalActionsInput) {
     lastInvokedScriptByProjectId,
     requestClosePanelTerminalStable,
     requestCloseTerminalStable,
+    runInPanelTerminalStable,
     runProjectScriptStable,
     runShellCommandStable,
     setTerminalOpenStable,

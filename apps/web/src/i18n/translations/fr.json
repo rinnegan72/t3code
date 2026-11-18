@@ -1870,6 +1870,8 @@
   "f2b4bf6e30024469": "Réduire {path}",
   "13bad2d3b2d2471c": "Développer le diff",
   "3d117a49eb32d0cb": "Réduire le diff",
+  "1df07de7a6a6c5dd": "Examiner {path} dans Neovim",
+  "6a61f2a8d9ece87b": "Examiner dans Neovim",
   "cadc29aaf9f0fd05": "Automatique",
   "ec520ada4398caa3": "Commit {sha}",
   "cf34b1bdf8179c16": "Locales",

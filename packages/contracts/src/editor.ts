@@ -12,6 +12,8 @@ type EditorDefinition = {
   readonly launchStyle: EditorLaunchStyle;
   readonly remoteScheme?: string;
   readonly jetbrainsProductCode?: string;
+  /** Runs inside a T3 terminal on the client; the server only detects it, never spawns it. */
+  readonly terminal?: true;
 };
 
 export const EDITORS = [
@@ -145,11 +147,15 @@ export const EDITORS = [
     launchStyle: "line-column",
     jetbrainsProductCode: "WS",
   },
+  { id: "nvim", label: "Neovim", commands: ["nvim"], launchStyle: "direct-path", terminal: true },
   { id: "file-manager", label: "File Manager", commands: null, launchStyle: "direct-path" },
 ] as const satisfies ReadonlyArray<EditorDefinition>;
 
 export const EditorId = Schema.Literals(EDITORS.map((e) => e.id));
 export type EditorId = typeof EditorId.Type;
+
+export const isTerminalEditor = (id: EditorId): boolean =>
+  EDITORS.some((editor) => editor.id === id && "terminal" in editor);
 
 export const FileManagerRevealKind = Schema.Literals(["finder", "file-explorer", "files"]);
 export type FileManagerRevealKind = typeof FileManagerRevealKind.Type;

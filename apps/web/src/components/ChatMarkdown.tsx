@@ -1,3 +1,4 @@
+import { useOpenInEditorCommand } from "~/terminalEditor";
 import { m } from "../i18n/messages";
 import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
 import { msg, T, useGT, useMessages } from "gt-react";
@@ -166,7 +167,6 @@ import { useRightPanelStore } from "../rightPanelStore";
 import { useOpenIssueLink } from "../lib/openIssueLink";
 import { readThreadShell, useProjects } from "../state/entities";
 import { serverEnvironment } from "../state/server";
-import { shellEnvironment } from "../state/shell";
 import { assetEnvironment } from "../state/assets";
 import {
   readEnvironmentScope,
@@ -677,7 +677,7 @@ function useChatMarkdownState({
   const [preferredEditor] = usePreferredEditor(availableEditors);
   const preferredEditorMenuLabel = openInEditorMenuLabel(preferredEditor, messages);
   const openInPreferredEditor = useOpenInPreferredEditor(environmentId, availableEditors, cwd);
-  const openInEditor = useAtomCommand(shellEnvironment.openInEditor, {
+  const openInEditor = useOpenInEditorCommand({
     reportFailure: false,
   });
   const revealFileInFileManager = (filePath: string) => {

@@ -1869,6 +1869,8 @@
   "f2b4bf6e30024469": "{path} einklappen",
   "13bad2d3b2d2471c": "Diff ausklappen",
   "3d117a49eb32d0cb": "Diff einklappen",
+  "1df07de7a6a6c5dd": "{path} in Neovim prüfen",
+  "6a61f2a8d9ece87b": "In Neovim prüfen",
   "cadc29aaf9f0fd05": "Automatisch",
   "ec520ada4398caa3": "Commit {sha}",
   "cf34b1bdf8179c16": "Lokal",

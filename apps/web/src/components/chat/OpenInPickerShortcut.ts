@@ -1,3 +1,4 @@
+import { useOpenInEditorCommand } from "~/terminalEditor";
 import {
   buildRemoteOpenUrl,
   type EditorId,
@@ -14,8 +15,6 @@ import { m } from "../../i18n/messages";
 import { announce } from "../../lib/announce";
 import { openRemoteEditorUrl, useRemoteCapableEditors, useRemoteOpenState } from "../../remoteOpen";
 import { registerCommands } from "../../shortcuts/dispatcher";
-import { shellEnvironment } from "../../state/shell";
-import { useAtomCommand } from "../../state/use-atom-command";
 
 /** Marks an OpenInPicker's primary button as the target of `editor.openFavorite`. */
 export const OPEN_FAVORITE_EDITOR_ATTRIBUTE = "data-open-favorite-editor";
@@ -55,7 +54,7 @@ export function useOpenFavoriteEditorShortcut({
   availableEditors: ReadonlyArray<EditorId>;
   openInCwd: string | null;
 }) {
-  const openInEditorMutation = useAtomCommand(shellEnvironment.openInEditor, "open in editor");
+  const openInEditorMutation = useOpenInEditorCommand("open in editor");
   const remote = useRemoteOpenState(environmentId);
   const remoteCapableEditors = useRemoteCapableEditors();
   // Matches the picker: remote editors run on the viewing machine.

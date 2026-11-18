@@ -1870,6 +1870,8 @@
   "f2b4bf6e30024469": "{path} 접기",
   "13bad2d3b2d2471c": "변경 사항 펼치기",
   "3d117a49eb32d0cb": "변경 사항 접기",
+  "1df07de7a6a6c5dd": "Neovim에서 {path} 검토",
+  "6a61f2a8d9ece87b": "Neovim에서 검토",
   "cadc29aaf9f0fd05": "자동",
   "ec520ada4398caa3": "커밋 {sha}",
   "cf34b1bdf8179c16": "커밋되지 않음",
