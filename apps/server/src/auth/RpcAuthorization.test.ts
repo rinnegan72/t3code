@@ -48,6 +48,16 @@ describe("RPC authorization scopes", () => {
     }
   });
 
+  it("keeps MCP configs, which hold API keys, behind settings write even for listing", () => {
+    for (const method of [
+      WS_METHODS.mcpConfigList,
+      WS_METHODS.mcpConfigUpsert,
+      WS_METHODS.mcpConfigRemove,
+    ]) {
+      expect(requiredScopeForRpcMethod(method)).toBe(AuthSettingsWriteScope);
+    }
+  });
+
   it("keeps triage, which seeds an agent that reads logs and the database, behind operate scope", () => {
     expect(requiredScopeForRpcMethod(WS_METHODS.serverPrepareTriage)).toBe(
       AuthOrchestrationOperateScope,

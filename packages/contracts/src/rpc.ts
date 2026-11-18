@@ -369,6 +369,12 @@ import {
   ServerUpsertKeybindingResult,
 } from "./server.ts";
 import {
+  McpConfigError,
+  McpConfigListResult,
+  McpConfigRemoveInput,
+  McpServerEntry,
+} from "./mcpConfig.ts";
+import {
   HostResourcesSnapshot,
   ResourceTelemetryHistory,
   ResourceTelemetryHistoryInput,
@@ -539,6 +545,9 @@ export const WS_METHODS = {
   serverCommitDesktopUpdate: "server.commitDesktopUpdate",
   serverUpsertKeybinding: "server.upsertKeybinding",
   serverRemoveKeybinding: "server.removeKeybinding",
+  mcpConfigList: "mcpConfig.list",
+  mcpConfigUpsert: "mcpConfig.upsert",
+  mcpConfigRemove: "mcpConfig.remove",
   serverRunStorageCleanup: "server.runStorageCleanup",
   serverGetStorageCleanupReport: "server.getStorageCleanupReport",
   serverGetDatabaseStorage: "server.getDatabaseStorage",
@@ -674,6 +683,23 @@ const WsServerUpsertKeybindingRpc = Rpc.make(WS_METHODS.serverUpsertKeybinding, 
   payload: ServerUpsertKeybindingInput,
   success: ServerUpsertKeybindingResult,
   error: Schema.Union([KeybindingsConfigError, EnvironmentAuthorizationError]),
+});
+
+const McpConfigRpcError = Schema.Union([McpConfigError, EnvironmentAuthorizationError]);
+const WsMcpConfigListRpc = Rpc.make(WS_METHODS.mcpConfigList, {
+  payload: Schema.Struct({}),
+  success: McpConfigListResult,
+  error: McpConfigRpcError,
+});
+const WsMcpConfigUpsertRpc = Rpc.make(WS_METHODS.mcpConfigUpsert, {
+  payload: McpServerEntry,
+  success: McpConfigListResult,
+  error: McpConfigRpcError,
+});
+const WsMcpConfigRemoveRpc = Rpc.make(WS_METHODS.mcpConfigRemove, {
+  payload: McpConfigRemoveInput,
+  success: McpConfigListResult,
+  error: McpConfigRpcError,
 });
 
 const WsServerRemoveKeybindingRpc = Rpc.make(WS_METHODS.serverRemoveKeybinding, {
@@ -2285,6 +2311,9 @@ export const WsRpcGroup = RpcGroup.make(
   WsServerCommitDesktopUpdateRpc,
   WsServerUpsertKeybindingRpc,
   WsServerRemoveKeybindingRpc,
+  WsMcpConfigListRpc,
+  WsMcpConfigUpsertRpc,
+  WsMcpConfigRemoveRpc,
   WsServerRunStorageCleanupRpc,
   WsServerGetStorageCleanupReportRpc,
   WsServerGetDatabaseStorageRpc,

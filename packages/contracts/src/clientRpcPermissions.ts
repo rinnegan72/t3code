@@ -22,6 +22,9 @@ export const CLIENT_GUARDED_RPC_SCOPES = {
   // Stopping a server signals its processes, as closing a terminal does.
   [WS_METHODS.previewStopLocalServer]: AuthTerminalOperateScope,
   [WS_METHODS.serverRunStorageCleanup]: AuthSettingsWriteScope,
+  [WS_METHODS.mcpConfigList]: AuthSettingsWriteScope,
+  [WS_METHODS.mcpConfigUpsert]: AuthSettingsWriteScope,
+  [WS_METHODS.mcpConfigRemove]: AuthSettingsWriteScope,
   // Restarts the server, as an update does.
   [WS_METHODS.serverReclaimDatabaseSpace]: AuthEnvironmentMaintainScope,
   [WS_METHODS.serverCheckOtlpEndpoint]: AuthSettingsWriteScope,

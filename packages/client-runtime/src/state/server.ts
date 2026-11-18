@@ -1747,6 +1747,22 @@ export function createServerEnvironmentAtoms<R, E>(
       scheduler: configScheduler,
       concurrency: configConcurrency,
     }),
+    listMcpConfig: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:list-mcp-config",
+      tag: WS_METHODS.mcpConfigList,
+    }),
+    upsertMcpServer: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:upsert-mcp-server",
+      tag: WS_METHODS.mcpConfigUpsert,
+      scheduler: configScheduler,
+      concurrency: configConcurrency,
+    }),
+    removeMcpServer: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:remove-mcp-server",
+      tag: WS_METHODS.mcpConfigRemove,
+      scheduler: configScheduler,
+      concurrency: configConcurrency,
+    }),
     updateSettings,
     mutateProviderInstance: updateSettings,
     prepareAcpRegistryAgent: createEnvironmentRpcCommand(runtime, {

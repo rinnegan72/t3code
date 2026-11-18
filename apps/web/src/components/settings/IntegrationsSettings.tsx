@@ -118,6 +118,7 @@ import {
 import { useSearchableSetting } from "./settingsSearch";
 import { AdvancedSettings } from "./AdvancedSettings";
 import { useSettingsScope } from "./SettingsScopeContext";
+import { McpServersSettings } from "./McpServersSettings";
 import { BrowserImportWizard, type WizardTarget } from "./BrowserImportWizard";
 import type { ImportOutcome } from "./browserImportWizard.logic";
 
@@ -1732,6 +1733,7 @@ export function DevicesSettingsPanel() {
   return (
     <SettingsPageContainer>
       <DeviceIntegrationSettings />
+      <McpServersSettings />
     </SettingsPageContainer>
   );
 }

@@ -89,6 +89,10 @@ export const RPC_REQUIRED_SCOPES = {
   [WS_METHODS.serverCommitDesktopUpdate]: AuthEnvironmentMaintainScope,
   [WS_METHODS.serverUpsertKeybinding]: AuthSettingsWriteScope,
   [WS_METHODS.serverRemoveKeybinding]: AuthSettingsWriteScope,
+  // MCP configs carry API keys in env and headers, so even listing needs settings write.
+  [WS_METHODS.mcpConfigList]: AuthSettingsWriteScope,
+  [WS_METHODS.mcpConfigUpsert]: AuthSettingsWriteScope,
+  [WS_METHODS.mcpConfigRemove]: AuthSettingsWriteScope,
   [WS_METHODS.serverGetStorageCleanupReport]: AuthOrchestrationReadScope,
   [WS_METHODS.serverGetDatabaseStorage]: AuthOrchestrationReadScope,
   [WS_METHODS.serverGetSettings]: AuthOrchestrationReadScope,

@@ -258,6 +258,7 @@ import * as SqlClient from "effect/sql/SqlClient";
 import * as PullRequestSyncReactor from "./orchestration-v2/PullRequestSyncReactor.ts";
 import * as SourceControlDiscovery from "./sourceControl/SourceControlDiscovery.ts";
 import * as OtlpEndpointCheck from "./observability/OtlpEndpointCheck.ts";
+import * as CursorMcpConfig from "./provider/CursorMcpConfig.ts";
 import * as TextGenerators from "./textGeneration/TextGenerators.ts";
 import * as SourceControlRepositoryService from "./sourceControl/SourceControlRepositoryService.ts";
 import * as SourceControlSignIn from "./sourceControl/SourceControlSignIn.ts";
@@ -1579,6 +1580,7 @@ export const layerWsRpc = (
       const sourceControlDiscovery = yield* SourceControlDiscovery.SourceControlDiscovery;
       const secretCheck = yield* SecretCheck.SecretCheck;
       const otlpEndpointCheck = yield* OtlpEndpointCheck.OtlpEndpointCheck;
+      const cursorMcpConfig = yield* CursorMcpConfig.CursorMcpConfig;
       const textGenerators = yield* TextGenerators.TextGenerators;
       const sourceControlRepositories =
         yield* SourceControlRepositoryService.SourceControlRepositoryService;
@@ -2686,6 +2688,9 @@ export const layerWsRpc = (
           Effect.fnUntraced(function* (rule) {
             return yield* keybindings.removeKeybindingRule(rule);
           }),
+        [WS_METHODS.mcpConfigList]: () => cursorMcpConfig.list,
+        [WS_METHODS.mcpConfigUpsert]: (entry) => cursorMcpConfig.upsert(entry),
+        [WS_METHODS.mcpConfigRemove]: ({ name }) => cursorMcpConfig.remove(name),
         [WS_METHODS.serverRunStorageCleanup]: () => storageCleanup.runNow,
         [WS_METHODS.serverGetStorageCleanupReport]: () => storageCleanup.reports,
         [WS_METHODS.serverGetDatabaseStorage]: () => databaseStorage.status,
@@ -3696,6 +3701,7 @@ export const layer = Layer.unwrap(
                 Layer.succeed(IssueTrackerConnections.IssueTrackerConnections, issueTrackers),
               ),
               Layer.provide(OtlpEndpointCheck.layer),
+              Layer.provide(CursorMcpConfig.layer),
               Layer.provide(
                 Layer.succeed(
                   PullRequestReviewGuideService.PullRequestReviewGuideService,
